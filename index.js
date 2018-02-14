@@ -2,7 +2,7 @@ var rework = require('rework');
 var reworkUrl = require('rework-plugin-url');
 var through = require('through2');
 
-module.exports = function(options) {
+module.exports = function (options) {
   var prepend = options.prepend;
   var replace = options.replace;
   var prependRelative = options.prependRelative;
@@ -10,8 +10,8 @@ module.exports = function(options) {
 
   function prependUrls(css) {
     return rework(css)
-      .use(reworkUrl(function(url) {
-        if (url.indexOf('data:') === 0) {
+      .use(reworkUrl(function (url) {
+        if (url.indexOf('data:') === 0 || url.indexOf('http') === 0) {
           return url;
         } else {
           var newUrl = url;
@@ -33,7 +33,7 @@ module.exports = function(options) {
             if (typeof replace == 'function') {
               newUrl = replace(url);
             } else {
-              newUrl = newUrl.replace(replace[0],replace[1]);
+              newUrl = newUrl.replace(replace[0], replace[1]);
             }
           }
 
@@ -43,7 +43,7 @@ module.exports = function(options) {
       .toString();
   };
 
-  return through.obj(function(file, enc, cb) {
+  return through.obj(function (file, enc, cb) {
     var css = prependUrls(file.contents.toString());
     file.contents = new Buffer(css);
 
